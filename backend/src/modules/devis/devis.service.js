@@ -3,6 +3,7 @@ const repository = require('./devis.repository');
 const { listTypes: listRegisteredTypes, getType } = require('./types');
 const { generateDevisPdf } = require('./pdf/generator');
 const { savePdf, resolvePdfPath } = require('./storage/devisStorage');
+const { buildPdfFileName } = require('./common/fileName');
 
 function httpError(status, message, details) {
   const error = new Error(message);
@@ -136,7 +137,7 @@ async function getPdfFile(id) {
   if (!fs.existsSync(file)) {
     throw httpError(404, 'Le fichier PDF est introuvable sur le serveur. Utilisez « Régénérer le PDF ».');
   }
-  return { file, fileName: `Devis_${devis.reference}.pdf` };
+  return { file, fileName: buildPdfFileName(devis) };
 }
 
 function describeType(typeId) {
