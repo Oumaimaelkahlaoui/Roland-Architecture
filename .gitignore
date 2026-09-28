@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Frontend build
+frontend/dist/
+
+# Vercel
+.vercel/
+
+# Backend generated files
+backend/storage/devis/
+backend/storage/samples/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,18 @@
+{
+  "date_devis": "2026-08-15",
+  "project_name": "RIAD KASBA",
+  "project_type": "Riad",
+  "mission": "Conception + autorisation + DCE + suivi",
+  "duree": "Environ 3 mois",
+  "surface": 231,
+  "localisation": "Méchouar - Kasbah",
+  "validite_jours": 30,
+  "cout_m2": 5000,
+  "taux_honoraires": 5,
+  "forfait": 50000,
+  "pct1": 30,
+  "pct2": 30,
+  "pct3": 20,
+  "pct4": 15,
+  "pct5": 5
+}
