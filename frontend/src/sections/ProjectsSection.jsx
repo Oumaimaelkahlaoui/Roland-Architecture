@@ -1,10 +1,8 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { projects } from '../data/projects';
-import { useCursor } from '../components/CursorContext';
 
 function WebflowInspirationSectionVertical({ project }) {
-  const { setLabel } = useCursor();
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -22,12 +20,7 @@ function WebflowInspirationSectionVertical({ project }) {
     >
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
 
-        <a
-          href={`/projects/${project.slug}`}
-          onMouseEnter={() => setLabel('Voir')}
-          onMouseLeave={() => setLabel(null)}
-          className="group relative block w-full h-full overflow-hidden"
-        >
+        <div className="group relative block w-full h-full overflow-hidden">
           {/* Contenu Texte + Image */}
           <div className="inspiration_content-wrapper absolute inset-0 overflow-hidden w-full h-full flex items-center">
 
@@ -73,7 +66,7 @@ function WebflowInspirationSectionVertical({ project }) {
             />
 
           </div>
-        </a>
+        </div>
 
       </div>
     </section>

@@ -23,11 +23,13 @@ export default function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-ink">
-      {/* Vidéo d'arrière-plan */}
+    <section className="relative h-[100svh] w-full overflow-hidden bg-ink">
+      {/* Vidéo d'arrière-plan
+          Mobile : object-[60%_50%] → change le 60% pour décaler le cadrage
+          (0% = gauche, 50% = centre, 100% = droite) */}
       <video
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover [filter:grayscale(1)_contrast(1.05)_brightness(0.95)]"
+        className="absolute inset-0 h-full w-full object-cover object-[60%_50%] md:object-center [filter:grayscale(1)_contrast(1.05)_brightness(0.95)]"
         src="/videos/hero-reel-fixed.mp4"
         poster="/videos/hero-poster.jpg"
         autoPlay
@@ -94,7 +96,8 @@ export default function Hero() {
       >
         <WorldClock />
 
-        <div className="flex flex-col items-center gap-2.5 text-[15px] tracking-[0.08em] text-paper">
+        {/* Masqué sur mobile pour éviter le chevauchement */}
+        <div className="hidden md:flex flex-col items-center gap-2.5 text-[15px] tracking-[0.08em] text-paper">
           {!reduceMotion && (
             <motion.span
               className="w-px bg-paper/50"
@@ -117,4 +120,3 @@ export default function Hero() {
     </section>
   );
 }
-

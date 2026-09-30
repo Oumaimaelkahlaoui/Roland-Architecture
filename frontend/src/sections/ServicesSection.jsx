@@ -6,6 +6,7 @@ import {
   useSpring,
 } from 'framer-motion';
 import { services } from '../data/services';
+import { useCursor } from '../components/CursorContext';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -25,6 +26,7 @@ const aiGeneratedImages = [
 ];
 
 export default function ServicesSection() {
+  const { setLabel } = useCursor();
   const [active, setActive] = useState(null);
 
   const mouseX = useMotionValue(0);
@@ -53,14 +55,14 @@ export default function ServicesSection() {
 
         {/* Grille 2 colonnes */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-          
-          {/* Colonne de gauche : Titre Expertise avec le logo en arrière-plan ajusté */}
+
+          {/* Colonne de gauche : Titre Expertise avec le logo en arrière-plan */}
           <div className="lg:col-span-5 relative py-8 md:py-0">
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-[41%] lg:translate-y-[-50%] lg:-translate-x-[61%] w-[380px] h-[380px] sm:w-[450px] sm:h-[450px] md:w-[540px] md:h-[540px] pointer-events-none opacity-[0.07] select-none z-0 flex items-center justify-center">
-              <img 
-                src="/logo/logo-mark-dark.png" 
-                alt="Background Logo" 
-                className="w-full h-full object-contain" 
+              <img
+                src="/logo/logo-mark-dark.png"
+                alt="Background Logo"
+                className="w-full h-full object-contain"
               />
             </div>
 
@@ -76,9 +78,12 @@ export default function ServicesSection() {
           </div>
 
           {/* Colonne de droite : Liste des services */}
-          <div 
+          <div
             onMouseMove={handleMouseMove}
-            onMouseLeave={() => setActive(null)}
+            onMouseLeave={() => {
+              setActive(null);
+              setLabel(null);
+            }}
             className="lg:col-span-7 border-t border-ink/10 relative"
           >
             {services.map((service, i) => (
@@ -89,7 +94,10 @@ export default function ServicesSection() {
                 viewport={{ once: true, amount: 0.4 }}
                 variants={fadeUp}
                 custom={i}
-                onMouseEnter={() => setActive(i)}
+                onMouseEnter={() => {
+                  setActive(i);
+                  setLabel('VOIR');
+                }}
                 onClick={() => setActive(active === i ? null : i)}
                 className="group relative flex flex-col cursor-pointer md:cursor-default border-b border-ink/10 py-6 md:py-10 transition-colors duration-500"
               >
@@ -120,7 +128,7 @@ export default function ServicesSection() {
                   </p>
                 </div>
 
-                {/* Bloc image + description qui s'affiche DIRECTEMENT EN DESSOUS de l'élément cliqué sur MOBILE */}
+                {/* Bloc image + description sous l'élément cliqué sur MOBILE */}
                 <AnimatePresence>
                   {active === i && (
                     <motion.div
@@ -146,7 +154,7 @@ export default function ServicesSection() {
               </motion.div>
             ))}
 
-            {/* Floating preview image — Uniquement sur desktop avec le suivi de curseur */}
+            {/* Floating preview image — desktop uniquement, suit le curseur */}
             {active !== null && (
               <motion.div
                 style={{ x: springX, y: springY }}
