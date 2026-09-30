@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { projects } from '../data/projects';
 import { useCursor } from '../components/CursorContext';
@@ -12,9 +12,36 @@ const fadeUp = {
   },
 };
 
+const AUTO_DELAY = 3500; // ms entre chaque projet sur mobile
+
 export default function Projects() {
   const { setLabel } = useCursor();
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isTouch, setIsTouch] = useState(false);
+
+  const list = projects.slice(0, 4);
+
+  // Détection appareil tactile (pas de hover)
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: none)');
+    setIsTouch(mq.matches);
+    const onChange = (e) => setIsTouch(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Défilement automatique sur mobile
+  // (le timer se réinitialise à chaque changement d'activeIndex, donc après un tap aussi)
+  useEffect(() => {
+    if (!isTouch) return;
+    const t = setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % list.length);
+    }, AUTO_DELAY);
+    return () => clearTimeout(t);
+  }, [isTouch, activeIndex, list.length]);
+
+  const current = isTouch ? activeIndex : hoveredIndex;
 
   return (
     <div className="bg-ink text-paper w-full min-h-screen flex flex-col justify-between overflow-hidden">
@@ -34,19 +61,28 @@ export default function Projects() {
 
       {/* Conteneur des 4 colonnes interactives */}
       <section className="w-full h-[70vh] md:h-[75vh] flex flex-col md:flex-row px-4 md:px-12 gap-3">
-        {projects.slice(0, 4).map((project, i) => {
-          const isHovered = hoveredIndex === i;
-          const isAnyHovered = hoveredIndex !== null;
+        {list.map((project, i) => {
+          const isHovered = current === i;
+          const isAnyHovered = current !== null;
 
           return (
             <motion.a
               key={project.slug}
               href={`/projects`}
+              onClick={(e) => {
+                // Mobile : 1er tap = sélectionner, 2e tap = ouvrir
+                if (isTouch && activeIndex !== i) {
+                  e.preventDefault();
+                  setActiveIndex(i);
+                }
+              }}
               onMouseEnter={() => {
+                if (isTouch) return;
                 setHoveredIndex(i);
                 setLabel('EXPLORER');
               }}
               onMouseLeave={() => {
+                if (isTouch) return;
                 setHoveredIndex(null);
                 setLabel(null);
               }}
@@ -86,6 +122,17 @@ export default function Projects() {
                   {project.name}
                 </h3>
               </div>
+
+              {/* Barre de progression (mobile uniquement) */}
+              {isTouch && isHovered && (
+                <motion.div
+                  key={`bar-${activeIndex}`}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: AUTO_DELAY / 1000, ease: 'linear' }}
+                  className="absolute bottom-0 left-0 h-[2px] w-full origin-left bg-paper/80"
+                />
+              )}
             </motion.a>
           );
         })}
