@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 const steps = [
   {
@@ -28,11 +28,16 @@ const steps = [
   },
 ];
 
+const STEP_DELAY = 1500; // ms entre chaque carte
+
 export default function Processus() {
   const [activeStep, setActiveStep] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   const bannerRef = useRef(null);
+  const gridRef = useRef(null);
+  const isInView = useInView(gridRef, { amount: 0.2 });
+
   const { scrollYProgress } = useScroll({
     target: bannerRef,
     offset: ['start start', 'end end'],
@@ -41,25 +46,30 @@ export default function Processus() {
   // Les bandes s'ouvrent au scroll (fond noir)
   const curtainScaleX = useTransform(scrollYProgress, [0.05, 0.65], [1, 0]);
 
-  // Rotation automatique rapide (2.2 secondes par carte)
+  // Quand la grille apparaît : on repart de la carte 1
   useEffect(() => {
-    if (isHovered) return;
-    
+    if (isInView) setActiveStep(0);
+  }, [isInView]);
+
+  // Rotation : uniquement si la grille est visible et que la souris n'est pas dessus
+  useEffect(() => {
+    if (!isInView || isHovered) return;
+
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % steps.length);
-    }, 1500);
+    }, STEP_DELAY);
 
     return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [isInView, isHovered]);
 
   return (
     <div className="bg-black text-white selection:bg-white selection:text-black">
-      
+
       {/* 1. SECTION BANNIÈRE */}
       <section ref={bannerRef} className="relative w-full h-[200vh] bg-black">
         <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
           <div className="relative block w-full h-full overflow-hidden">
-            
+
             {/* Image de fond */}
             <div className="absolute inset-0 w-full h-full">
               <img
@@ -71,7 +81,7 @@ export default function Processus() {
             </div>
 
             {/* Texte stable */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -89,15 +99,15 @@ export default function Processus() {
             </motion.div>
 
             {/* Les 3 blocs rideaux verticaux en noir */}
-            <motion.div 
+            <motion.div
               style={{ scaleX: curtainScaleX }}
               className="absolute inset-y-0 left-0 w-1/3 bg-black z-20 origin-left"
             />
-            <motion.div 
+            <motion.div
               style={{ scaleX: curtainScaleX }}
               className="absolute inset-y-0 left-1/3 w-1/3 bg-black z-20 origin-center"
             />
-            <motion.div 
+            <motion.div
               style={{ scaleX: curtainScaleX }}
               className="absolute inset-y-0 right-0 w-1/3 bg-black z-20 origin-right"
             />
@@ -109,7 +119,7 @@ export default function Processus() {
       {/* 2. SECTION PROCESSUS - DESIGN CARTES IMMERSIVES */}
       <section className="relative bg-black py-32 md:py-48 overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-6 md:px-16">
-          
+
           {/* En-tête de section */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20">
             <div>
@@ -121,15 +131,20 @@ export default function Processus() {
               </h3>
             </div>
             <p className="mt-4 md:mt-0 max-w-md text-sm text-white/60 leading-relaxed">
-              Une approche structurée et transparente pour donner vie à vos projets architecturaux, du premier trait jusqu’à la livraison finale.
+              Une approche structurée et transparente pour donner vie à vos projets architecturaux, du premier trait jusqu'à la livraison finale.
             </p>
           </div>
 
           {/* Grille des étapes */}
-          <div 
+          <div
+            ref={gridRef}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onPointerEnter={(e) => {
+              if (e.pointerType === 'mouse') setIsHovered(true);
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType === 'mouse') setIsHovered(false);
+            }}
           >
             {steps.map((step, index) => {
               const isActive = activeStep === index;
@@ -143,8 +158,8 @@ export default function Processus() {
                   transition={{ duration: 0.6, delay: index * 0.15 }}
                   onClick={() => setActiveStep(index)}
                   className={`group relative p-8 md:p-10 rounded-2xl border transition-all duration-500 cursor-pointer flex flex-col justify-between min-h-[380px] ${
-                    isActive 
-                      ? 'bg-white/10 border-white/50 shadow-2xl shadow-white/10 scale-[1.02]' 
+                    isActive
+                      ? 'bg-white/10 border-white/50 shadow-2xl shadow-white/10 scale-[1.02]'
                       : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.05]'
                   }`}
                 >
@@ -166,7 +181,7 @@ export default function Processus() {
                     }`}>
                       {step.title}
                     </h4>
-                    
+
                     <p className="text-xs uppercase tracking-wider text-white/50 mb-6 font-mono">
                       {step.subtitle}
                     </p>

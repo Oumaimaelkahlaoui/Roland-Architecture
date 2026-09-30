@@ -1,12 +1,31 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
+// Détection appareil tactile (pas de hover)
+function useIsTouch() {
+  const [isTouch, setIsTouch] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(hover: none)').matches
+      : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: none)');
+    setIsTouch(mq.matches);
+    const onChange = (e) => setIsTouch(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  return isTouch;
+}
+
 // Composant pour animer les chiffres au scroll
 function Counter({ value, suffix = '' }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-50px" });
-  
+
   // Convertir la valeur en nombre si possible
   const numericValue = parseInt(value, 10);
   const isNumber = !isNaN(numericValue);
@@ -36,7 +55,10 @@ function Counter({ value, suffix = '' }) {
   }, [isInView, numericValue, isNumber]);
 
   return (
-    <span ref={ref} className="font-display text-4xl sm:text-6xl font-normal text-[#f4f2ee] mb-2">
+    <span
+      ref={ref}
+      className="font-display text-4xl sm:text-6xl font-normal text-[#f4f2ee] mb-2 break-words"
+    >
       {isNumber ? `${count}${suffix}` : value}
     </span>
   );
@@ -68,10 +90,19 @@ const stats = [
 ];
 
 export default function Studio() {
+  const isTouch = useIsTouch();
+
+  // Mobile : l'image passe en couleur quand elle est au centre de l'écran,
+  // et repasse en gris dès qu'elle s'éloigne (marge de 35% en haut et en bas)
+  const imageRef = useRef(null);
+  const isImageCentered = useInView(imageRef, {
+    margin: '-35% 0px -35% 0px',
+  });
+
   return (
     // Fond chaleureux texturé inspiré des tons terre/sable pour casser le noir pur et s'harmoniser avec le footer
     <section className="bg-[#121110] text-[#f4f2ee] py-28 md:py-40 px-6 md:px-16 min-h-screen relative overflow-hidden">
-      
+
       {/* Halos de lumière ambrés et doux pour réchauffer l'atmosphère */}
       <div className="absolute top-10 left-10 w-[600px] h-[600px] bg-[#26211d] rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#1c1815] rounded-full blur-[150px] pointer-events-none" />
@@ -81,7 +112,7 @@ export default function Studio() {
         {/* En-tête de la page */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 pb-12 border-b border-[#f4f2ee]/15 gap-8">
           <div>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -90,7 +121,7 @@ export default function Studio() {
             >
               02 — Studio
             </motion.p>
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -101,7 +132,7 @@ export default function Studio() {
             </motion.h2>
           </div>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -114,7 +145,7 @@ export default function Studio() {
 
         {/* Section Manifesto / Présentation principale */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 mb-28 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: "-100px" }}
@@ -132,18 +163,25 @@ export default function Studio() {
             </p>
           </motion.div>
 
-          {/* Image du studio affichée correctement (format paysage adapté / Widescreen) */}
-          <motion.div 
+          {/* Image du studio : mobile = gris → couleur au centre de l'écran, desktop = gris + hover */}
+          <motion.div
+            ref={imageRef}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-5 relative w-full aspect-[16/11] sm:aspect-[4/3] overflow-hidden rounded-2xl border border-[#f4f2ee]/15 bg-[#171513] group cursor-pointer shadow-2xl"
+            className="lg:col-span-5 relative w-full aspect-[16/11] sm:aspect-[4/3] overflow-hidden rounded-2xl border border-[#f4f2ee]/15 bg-[#171513] group md:cursor-pointer shadow-2xl"
           >
-            <img 
-              src="/projects/villa-marrakech.jfif" 
-              alt="Villa Atlas Marrakech" 
-              className="w-full h-full object-cover object-center grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+            <img
+              src="/projects/villa-marrakech.jfif"
+              alt="Villa Atlas Marrakech"
+              className={`w-full h-full object-cover object-center transition-all duration-700 ease-out ${
+                isTouch
+                  ? isImageCentered
+                    ? 'grayscale-0 scale-105'
+                    : 'grayscale contrast-125 scale-100'
+                  : 'grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105'
+              }`}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#121110]/80 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
@@ -151,15 +189,19 @@ export default function Studio() {
                 <span className="text-[11px] font-mono tracking-widest uppercase text-[#f4f2ee]/60 block mb-1">Atelier</span>
                 <p className="text-lg font-display">Marrakech, Maroc</p>
               </div>
-              <span className="text-xs font-mono uppercase tracking-widest bg-[#f4f2ee]/10 backdrop-blur-md px-3 py-1 rounded-full border border-[#f4f2ee]/15 text-[#f4f2ee]/80 group-hover:bg-[#f4f2ee] group-hover:text-[#121110] transition-colors duration-300">
-                Survoler
-              </span>
+
+              {/* Le badge "Survoler" n'a de sens que sur desktop */}
+              {!isTouch && (
+                <span className="text-xs font-mono uppercase tracking-widest bg-[#f4f2ee]/10 backdrop-blur-md px-3 py-1 rounded-full border border-[#f4f2ee]/15 text-[#f4f2ee]/80 group-hover:bg-[#f4f2ee] group-hover:text-[#121110] transition-colors duration-300">
+                  Survoler
+                </span>
+              )}
             </div>
           </motion.div>
         </div>
 
         {/* Section Chiffres clés / Statistiques avec fond nuancé */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: "-80px" }}
@@ -168,18 +210,29 @@ export default function Studio() {
         >
           {/* Effet lumineux subtil en arrière-plan */}
           <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#f4f2ee]/5 rounded-full blur-3xl pointer-events-none" />
-          
-          {stats.map((stat, idx) => (
-            <div key={idx} className="flex flex-col relative z-10">
-              <Counter value={stat.value} suffix={stat.suffix} />
-              <span className="text-xs uppercase font-mono tracking-widest text-[#f4f2ee]/50">{stat.label}</span>
-            </div>
-          ))}
+
+          {stats.map((stat, idx) => {
+            const isText = isNaN(parseInt(stat.value, 10));
+
+            return (
+              <div
+                key={idx}
+                className={`flex flex-col relative z-10 min-w-0 ${
+                  isText ? 'col-span-2 md:col-span-1' : ''
+                }`}
+              >
+                <Counter value={stat.value} suffix={stat.suffix} />
+                <span className="text-xs uppercase font-mono tracking-widest text-[#f4f2ee]/50">
+                  {stat.label}
+                </span>
+              </div>
+            );
+          })}
         </motion.div>
 
         {/* Section Piliers / Valeurs */}
         <div className="mb-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
