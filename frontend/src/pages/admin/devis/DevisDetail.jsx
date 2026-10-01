@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { downloadBlob, fetchPdf, getDevis, getTypeSchema, regenerateDevis } from '../../../services/devis';
 import RecapSections from './RecapSections';
-import { formatDate, formatMoney } from './formatters';
+import { devisFileName, formatDate, formatMoney } from './formatters';
 import { Banner, PageHeader, PdfViewer, Spinner, StatusBadge, buttonPrimary, buttonSecondary } from './ui';
 
 // Voir un devis : PDF enregistré + informations + calculs ; télécharger, modifier, régénérer
@@ -58,7 +58,7 @@ export default function DevisDetail() {
     setBusy('download');
     setError('');
     try {
-      downloadBlob(await fetchPdf(devis.id), `Devis_${devis.reference}.pdf`);
+      downloadBlob(await fetchPdf(devis.id), devisFileName(devis));
     } catch (err) {
       setError(err.message);
     } finally {

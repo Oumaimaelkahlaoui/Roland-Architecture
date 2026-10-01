@@ -6,6 +6,7 @@ import {
 import DynamicForm from './DynamicForm';
 import RecapSections from './RecapSections';
 import { initialValues, toPayload } from './formValues';
+import { devisFileName } from './formatters';
 import { Banner, PageHeader, PdfViewer, Spinner, buttonPrimary, buttonSecondary } from './ui';
 
 const STEPS = [
@@ -22,7 +23,11 @@ function Stepper({ current }) {
         <li
           key={step.key}
           className={`px-3 py-1.5 rounded-full border ${
-            i === index ? '   bg-sky-600 border-sky-600 text-white' : i < index ? '   bg-sky-50 border-sky-200 text-sky-700' : 'bg-white border-slate-200 text-slate-400'
+            i === index
+              ? 'bg-[#C9A96E] border-[#C9A96E] text-[#1a1510]'
+              : i < index
+                ? 'bg-[#C9A96E]/10 border-[#C9A96E]/40 text-[#8A6A3B]'
+                : 'bg-white border-slate-200 text-slate-400'
           }`}
         >
           {step.label}
@@ -156,7 +161,8 @@ export default function DevisEditor() {
     try {
       const payload = toPayload(schema.fields, values);
       const devis = editing ? await updateDevis(id, payload) : await createDevis(schema.id, payload);
-      if (download) downloadBlob(await fetchPdf(devis.id), `Devis_${devis.reference}.pdf`);
+    
+      if (download) downloadBlob(await fetchPdf(devis.id), devisFileName(devis));
       navigate(`/admin/devis/${devis.id}`);
     } catch (err) {
       showError(err);

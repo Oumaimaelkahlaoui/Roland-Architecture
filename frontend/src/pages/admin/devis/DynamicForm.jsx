@@ -2,7 +2,7 @@
 // Aucun champ n'est écrit en dur ici : chaque type de devis décrit les siens.
 
 const inputBase =
-  'w-full h-11 px-3.5 bg-white border rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 focus:ring-[#3644D9]/10 focus:border-[#3644D9]/60';
+  'w-full h-11 px-3.5 bg-white border rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 focus:ring-[#C9A96E]/15 focus:border-[#C9A96E]/70';
 
 function Field({ field, value, error, onChange }) {
   const id = `field-${field.key}`;
@@ -17,7 +17,7 @@ function Field({ field, value, error, onChange }) {
             type="checkbox"
             checked={Boolean(value)}
             onChange={(e) => onChange(field.key, e.target.checked)}
-            className="h-4 w-4 accent-[#3644D9]"
+            className="h-4 w-4 accent-[#C9A96E]"
           />
           <span className="text-sm font-medium text-slate-700">{field.label}</span>
         </label>
@@ -45,7 +45,7 @@ function Field({ field, value, error, onChange }) {
     <div className={wide ? 'md:col-span-2' : ''} data-error={error ? 'true' : undefined}>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-slate-700">
         {field.label}
-        {field.required && <span className="text-[#3644D9]"> *</span>}
+        {field.required && <span className="text-[#8A6A3B]"> *</span>}
       </label>
       {field.unit && isNumber ? (
         <div className="relative">

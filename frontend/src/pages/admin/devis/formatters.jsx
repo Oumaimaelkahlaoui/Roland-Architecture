@@ -22,3 +22,23 @@ export function formatFieldValue(field, value) {
   }
   return String(value);
 }
+
+// Nom du fichier PDF : DEVIS_<PROJET>_<CLIENT>.pdf (majuscules, sans accents ni caractères spéciaux)
+function cleanForFileName(text, maxLength = 60) {
+  return String(text || '')
+    .replace(/œ/gi, 'oe')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toUpperCase()
+    .slice(0, maxLength)
+    .replace(/_+$/g, '');
+}
+
+export function devisFileName(devis) {
+  const parts = ['DEVIS', cleanForFileName(devis.project_name), cleanForFileName(devis.client_name)].filter(Boolean);
+  // Ni projet ni client : on retombe sur la référence
+  if (parts.length === 1) parts.push(cleanForFileName(devis.reference));
+  return `${parts.join('_')}.pdf`;
+}

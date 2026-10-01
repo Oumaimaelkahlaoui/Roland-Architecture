@@ -4,7 +4,7 @@ import { listTypes } from '../../../services/devis';
 import { Banner, PageHeader, buttonSecondary } from './ui';
 
 const TONES = {
-  'bab-taghzout': 'bg-[#3644D9]',
+  'bab-taghzout': 'bg-[#C9A96E]',
   'riad-kasba': 'bg-teal-500',
 };
 
@@ -34,12 +34,12 @@ export default function DevisNew() {
               <Link
                 key={type.id}
                 to={`/admin/devis/nouveau/${type.id}`}
-                className="group relative flex min-h-[9rem] flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/[0.03] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3644D9]/40 hover:shadow-lg hover:shadow-[#3644D9]/10"
+                className="group relative flex min-h-[9rem] flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/[0.03] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A96E]/60 hover:shadow-lg hover:shadow-[#C9A96E]/15"
               >
                 <span className={`h-2.5 w-2.5 rounded-full ${TONES[type.id] || 'bg-slate-400'}`} />
                 <div>
                   <span className="block text-base font-semibold leading-snug text-slate-900">{type.label}</span>
-                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#3644D9]">
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#8A6A3B]">
                     Créer ce devis
                     <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                   </span>

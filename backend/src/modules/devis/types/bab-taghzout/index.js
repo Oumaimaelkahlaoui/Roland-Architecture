@@ -4,7 +4,7 @@ const { compute } = require('./calculations');
 const layout = require('./layout');
 
 // Intitulé tiré de la couverture (p.1)
-const label = 'Devis d’honoraires — Réaménagement d’une maison existante en maison d’hôtes 2 étoiles';
+const label = 'Devis d’honoraires — Maison d’hôtes, honoraires au m² + BET + topographe';
 
 const groups = [
   { key: 'general', label: 'Informations générales' },
@@ -19,15 +19,15 @@ const fields = [
   { key: 'date_devis', label: 'Date du devis', type: 'date', required: true, group: 'general',
     default: todayIso, help: 'Imprimée en bas de la couverture (JJ/MM/AAAA).' },
   { key: 'nom_projet', label: 'Nom du projet', type: 'text', required: true, group: 'general', maxLength: 60,
-    default: 'Bab Taghzout', help: 'Utilisé dans la phrase « Pour ce projet de … » (p. 2).' },
+    placeholder: 'Ex. Bab Taghzout', help: 'Utilisé dans la phrase « Pour ce projet de … » (p. 2).' },
   { key: 'cover_nature', label: 'Nature du projet (couverture)', type: 'text', required: true, group: 'general',
-    maxLength: 140, default: 'RÉAMÉNAGEMENT D’UNE MAISON EXISTANTE EN MAISON D’HÔTES 2 ÉTOILES',
+    maxLength: 140, placeholder: 'Ex. Réaménagement d’une maison existante en maison d’hôtes 2 étoiles',
     help: 'Titre de la couverture (p. 1), en majuscules, sur 2 à 3 lignes. Un texte beaucoup plus long débordera visuellement.' },
   { key: 'cover_localisation', label: 'Localisation (couverture)', type: 'text', required: true, group: 'general',
-    maxLength: 80, default: 'BAB TAGHZOUT - MÉDINA DE MARRAKECH',
+    maxLength: 80, placeholder: 'Ex. Bab Taghzout - Médina de Marrakech',
     help: 'Sous-titre de la couverture (p. 1), en majuscules.' },
   { key: 'localisation_case', label: 'Localisation', type: 'text', required: true, group: 'general', maxLength: 60,
-    default: 'Bab Taghzout - Marrakech', help: 'Case « LOCALISATION » (p. 3) — libellé différent de celui de la couverture.' },
+    placeholder: 'Ex. Bab Taghzout - Marrakech', help: 'Case « LOCALISATION » (p. 3) — libellé différent de celui de la couverture.' },
 
   { key: 'mission', label: 'Mission', type: 'text', required: true, group: 'mission', maxLength: 100,
     default: 'Architecture + intérieur + autorisation + exécution + suivi' },
@@ -50,15 +50,15 @@ const fields = [
     default: 10, min: 0, unit: 'm²',
     help: 'S’ajoute après multiplication par le coefficient ci-dessus (p. 6).' },
   { key: 'bet_stabilite', label: 'BET — Attestation de stabilité', type: 'number', required: true,
-    group: 'honoraires', default: 2000, exclusiveMin: 0, unit: 'MAD HT' },
+    group: 'honoraires', exclusiveMin: 0, unit: 'MAD HT', placeholder: 'Ex. 2000' },
   { key: 'bet_securite', label: 'BET — Notice de sécurité', type: 'number', required: true, group: 'honoraires',
-    default: 3000, exclusiveMin: 0, unit: 'MAD HT' },
+    exclusiveMin: 0, unit: 'MAD HT', placeholder: 'Ex. 3000' },
   { key: 'bet_beton', label: 'BET — Étude et plans de béton armé', type: 'number', required: true,
-    group: 'honoraires', default: 7000, exclusiveMin: 0, unit: 'MAD HT' },
+    group: 'honoraires', exclusiveMin: 0, unit: 'MAD HT', placeholder: 'Ex. 7000' },
   { key: 'bet_suivi', label: 'BET — Suivi des ouvrages structurels', type: 'number', required: true,
-    group: 'honoraires', default: 3000, exclusiveMin: 0, unit: 'MAD HT' },
+    group: 'honoraires', exclusiveMin: 0, unit: 'MAD HT', placeholder: 'Ex. 3000' },
   { key: 'topographe', label: 'Honoraires du géomètre-topographe', type: 'number', required: true,
-    group: 'honoraires', default: 3000, exclusiveMin: 0, unit: 'MAD HT' },
+    group: 'honoraires', exclusiveMin: 0, unit: 'MAD HT', placeholder: 'Ex. 3000' },
 
   { key: 'pct1', label: '1. À la signature du contrat', type: 'number', required: true, group: 'echeancier',
     default: 30, min: 0, max: 100, unit: '%' },
@@ -72,11 +72,11 @@ const fields = [
     type: 'number', required: true, group: 'echeancier', default: 10, min: 0, max: 100, unit: '%' },
 
   { key: 'client_name', label: 'Maîtres d’ouvrage', type: 'text', required: true, group: 'client', maxLength: 160,
-    default: 'M. Damien Duval / Mme Emilie Chatelain' },
+    placeholder: 'Ex. M. Damien Duval / Mme Emilie Chatelain' },
   { key: 'show_client', label: 'Afficher le client sur le PDF', type: 'boolean', group: 'client', default: true,
     help: 'Ajoute la ligne « Maîtres d’ouvrage : … » sous « OBJET DU DEVIS » (p. 3).' },
   { key: 'reference_fonciere', label: 'Référence foncière', type: 'text', required: true, group: 'client',
-    maxLength: 60, default: 'TF n° 04/85950', help: 'Toujours imprimée (p. 3), à la différence du client.' },
+    maxLength: 60, placeholder: 'Ex. TF n° 04/85950', help: 'Toujours imprimée (p. 3), à la différence du client.' },
 ];
 
 function validate(input) {

@@ -66,7 +66,7 @@ export default function AdminDashboard() {
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div aria-hidden className="pointer-events-none absolute -left-16 -top-24 h-64 w-64 rounded-full bg-[#3644D9]/25 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-16 -top-24 h-64 w-64 rounded-full bg-[#C9A96E]/20 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-px bg-white/10" />
 
         <div className="relative">
@@ -108,11 +108,11 @@ export default function AdminDashboard() {
               >
                 {({ isActive }) => (
                   <>
-                    {isActive && <span className="absolute -left-4 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-[#5B69F5]" />}
+                    {isActive && <span className="absolute -left-4 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-[#C9A96E]" />}
                     <span
                       className={`grid h-8 w-8 place-items-center rounded-lg ring-1 transition-colors ${
                         isActive
-                          ? 'bg-[#3644D9]/25 text-[#9AA4FF] ring-[#5B69F5]/40'
+                          ? 'bg-[#C9A96E]/15 text-[#E6CFA0] ring-[#C9A96E]/40'
                           : 'bg-white/[0.04] text-slate-500 ring-white/10 group-hover:text-slate-300'
                       }`}
                     >
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
         {/* profil + déconnexion */}
         <div className="relative space-y-3">
           <div className="flex items-center gap-3 rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#5B69F5] to-[#2431A8] text-xs font-semibold text-white">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#8A6A3B] text-xs font-semibold text-[#1a1510]">
               {initials(user.name)}
             </span>
             <div className="min-w-0 leading-tight">
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
             </svg>
           </button>
           <span className="truncate text-sm font-semibold tracking-wide text-white">Roland Architecture</span>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#5B69F5] to-[#2431A8] text-xs font-semibold text-white">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#C9A96E] to-[#8A6A3B] text-xs font-semibold text-[#1a1510]">
             {initials(user.name)}
           </span>
         </header>

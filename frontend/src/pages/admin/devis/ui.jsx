@@ -40,7 +40,7 @@ export function Banner({ children, tone = 'error' }) {
   if (!children) return null;
   const tones = {
     error: 'bg-rose-50 border-rose-200 text-rose-700',
-    warning: 'bg-violet-50 border-violet-200 text-violet-800',
+    warning: 'bg-amber-50 border-amber-200 text-amber-800',
     success: 'bg-emerald-50 border-emerald-200 text-emerald-700',
   };
   return <div className={`rounded-xl border px-4 py-3 text-sm font-medium ${tones[tone]}`}>{children}</div>;
@@ -59,6 +59,6 @@ export function PdfViewer({ url, emptyLabel = 'Aucun PDF à afficher.' }) {
 }
 
 export const buttonPrimary =
-  'inline-flex items-center justify-center rounded-xl bg-[#3644D9] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#3644D9]/30 transition-colors hover:bg-[#2B39C2] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center rounded-xl bg-[#C9A96E] px-4 py-2.5 text-sm font-semibold text-[#1a1510] shadow-sm shadow-[#C9A96E]/30 transition-colors hover:bg-[#B8975A] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 export const buttonSecondary =
   'inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';

@@ -13,7 +13,7 @@ export default function RecapSections({ schema, values, recap = [] }) {
           key={section.title}
           className="relative overflow-hidden rounded-2xl bg-black text-white shadow-xl shadow-black/15 ring-1 ring-white/10"
         >
-          <div aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full bg-[#3644D9]/35 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full bg-[#C9A96E]/25 blur-3xl" />
           <h3 className="relative border-b border-white/10 px-6 py-4 text-sm font-semibold text-white">{section.title}</h3>
           <dl className="relative divide-y divide-white/10">
             {section.rows.map((row) => (
@@ -22,7 +22,7 @@ export default function RecapSections({ schema, values, recap = [] }) {
                   {row.label}
                   {row.note && <span className="mt-0.5 block text-xs text-slate-500">{row.note}</span>}
                 </dt>
-                <dd className={`text-right tabular-nums ${row.strong ? 'text-base font-bold text-[#B4BBFF]' : 'font-medium text-slate-100'}`}>
+                <dd className={`text-right tabular-nums ${row.strong ? 'text-base font-bold text-[#E6CFA0]' : 'font-medium text-slate-100'}`}>
                   {row.value}
                 </dd>
               </div>

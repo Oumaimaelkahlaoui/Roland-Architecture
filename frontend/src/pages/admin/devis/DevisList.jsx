@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { downloadBlob, fetchPdf, listDevis, listTypes } from '../../../services/devis';
-import { formatDate, formatMoney } from './formatters';
+import { devisFileName, formatDate, formatMoney } from './formatters';
 
 /* ---------- petites briques ---------- */
 const Icon = ({ d, className = 'h-4 w-4' }) => (
@@ -22,7 +22,7 @@ const ICONS = {
 };
 
 const TYPE_TONES = {
-  'bab-taghzout': { dot: 'bg-[#3644D9]', ring: 'ring-[#3644D9]/15' },
+  'bab-taghzout': { dot: 'bg-[#C9A96E]', ring: 'ring-[#C9A96E]/20' },
   'riad-kasba': { dot: 'bg-teal-500', ring: 'ring-teal-500/15' },
 };
 const toneFor = (type) => TYPE_TONES[type] || { dot: 'bg-slate-400', ring: 'ring-slate-400/15' };
@@ -51,8 +51,8 @@ function StatusPill({ status }) {
 function IconAction({ label, onClick, to, children, primary = false, disabled = false }) {
   const cls = `grid h-9 w-9 place-items-center rounded-xl border transition-all duration-200 cursor-pointer
     ${primary
-      ? 'border-[#3644D9] bg-[#3644D9] text-white shadow-sm shadow-[#3644D9]/30 hover:bg-[#2B39C2]'
-      : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-[#3644D9] hover:shadow-sm'}
+      ? 'border-[#C9A96E] bg-white text-[#8A6A3B] shadow-sm hover:bg-[#C9A96E] hover:text-[#1a1510] hover:shadow-md hover:shadow-[#C9A96E]/30'
+      : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-[#8A6A3B] hover:shadow-sm'}
     disabled:pointer-events-none disabled:opacity-40`;
   if (to) {
     return (
@@ -72,7 +72,7 @@ function IconAction({ label, onClick, to, children, primary = false, disabled = 
 function CardAction({ label, onClick, to, icon, primary = false, disabled = false, loading = false }) {
   const cls = `flex flex-1 items-center justify-center gap-2 rounded-xl border py-2.5 text-sm font-medium transition-colors cursor-pointer
     ${primary
-      ? 'border-[#3644D9] bg-[#3644D9] text-white hover:bg-[#2B39C2]'
+      ? 'border-[#C9A96E] bg-white text-[#8A6A3B] hover:bg-[#C9A96E] hover:text-[#1a1510]'
       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}
     disabled:pointer-events-none disabled:opacity-40`;
   const content = (
@@ -108,7 +108,7 @@ function StatCard({ icon, label, value, hint, dark = false, className = '' }) {
           : 'border border-slate-200/80 bg-white shadow-sm shadow-slate-900/[0.03]'
       } ${className}`}
     >
-      {dark && <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-[#3644D9]/40 blur-3xl" />}
+      {dark && <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-[#C9A96E]/30 blur-3xl" />}
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className={`text-sm font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{label}</p>
@@ -119,7 +119,7 @@ function StatCard({ icon, label, value, hint, dark = false, className = '' }) {
         </div>
         <span
           className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${
-            dark ? 'bg-white/[0.08] text-[#9AA4FF] ring-1 ring-white/10' : 'bg-[#3644D9]/10 text-[#3644D9]'
+            dark ? 'bg-white/[0.08] text-[#E6CFA0] ring-1 ring-white/10' : 'bg-[#C9A96E]/15 text-[#8A6A3B]'
           }`}
         >
           <Icon d={icon} className="h-[18px] w-[18px]" />
@@ -133,7 +133,7 @@ function EmptyState({ filtering }) {
   return (
     <div className="px-6 py-16 sm:py-20">
       <div className="mx-auto flex max-w-sm flex-col items-center text-center">
-        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-black text-[#9AA4FF] shadow-xl shadow-black/20">
+        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-black text-[#E6CFA0] shadow-xl shadow-black/20">
           <Icon d={ICONS.doc} className="h-6 w-6" />
         </span>
         <p className="mt-4 text-base font-semibold text-slate-900">{filtering ? 'Aucun résultat' : 'Aucun devis pour le moment'}</p>
@@ -145,7 +145,7 @@ function EmptyState({ filtering }) {
         {!filtering && (
           <Link
             to="/admin/devis/nouveau"
-            className="mt-5 rounded-xl bg-[#3644D9] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#3644D9]/25 transition hover:bg-[#2B39C2]"
+            className="mt-5 rounded-xl bg-[#C9A96E] px-5 py-2.5 text-sm font-semibold text-[#1a1510] shadow-lg shadow-[#C9A96E]/25 transition hover:bg-[#B8975A]"
           >
             Créer un devis
           </Link>
@@ -192,7 +192,7 @@ function Pagination({ total, page, pageSize, onPage, onPageSize }) {
           <select
             value={pageSize}
             onChange={(e) => onPageSize(Number(e.target.value))}
-            className="h-8 cursor-pointer rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 outline-none focus:border-[#3644D9]/60 focus:ring-4 focus:ring-[#3644D9]/10"
+            className="h-8 cursor-pointer rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 outline-none focus:border-[#C9A96E]/70 focus:ring-4 focus:ring-[#C9A96E]/15"
           >
             {PAGE_SIZES.map((size) => (
               <option key={size} value={size}>
@@ -318,7 +318,7 @@ export default function DevisList() {
     setActionError('');
     setDownloadingId(devis.id);
     try {
-      downloadBlob(await fetchPdf(devis.id), `Devis_${devis.reference}.pdf`);
+    downloadBlob(await fetchPdf(devis.id), devisFileName(devis));
     } catch (err) {
       setActionError(err.message);
     } finally {
@@ -331,7 +331,7 @@ export default function DevisList() {
   return (
     <div className="relative isolate min-h-full bg-[#F4F5F8]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 overflow-hidden">
-        <div className="absolute -right-20 -top-32 h-96 w-96 rounded-full bg-[#3644D9]/10 blur-3xl" />
+        <div className="absolute -right-20 -top-32 h-96 w-96 rounded-full bg-[#C9A96E]/15 blur-3xl" />
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 pb-12 pt-6 sm:px-6 lg:px-10 lg:pb-16 lg:pt-10">
@@ -343,7 +343,7 @@ export default function DevisList() {
           </div>
           <Link
             to="/admin/devis/nouveau"
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition-all duration-200 hover:bg-[#3644D9] hover:shadow-[#3644D9]/30 sm:w-auto"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition-all duration-200 hover:bg-[#C9A96E] hover:text-[#1a1510] hover:shadow-[#C9A96E]/30 sm:w-auto"
           >
             <Icon d={ICONS.plus} className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
             Nouveau devis
@@ -382,14 +382,14 @@ export default function DevisList() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher par référence, client ou projet…"
-                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#3644D9]/60 focus:bg-white focus:ring-4 focus:ring-[#3644D9]/10"
+                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#C9A96E]/70 focus:bg-white focus:ring-4 focus:ring-[#C9A96E]/15"
               />
             </div>
             {types.length > 1 && (
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="h-11 w-full cursor-pointer truncate rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm text-slate-700 outline-none transition focus:border-[#3644D9]/60 focus:bg-white focus:ring-4 focus:ring-[#3644D9]/10 sm:w-auto sm:max-w-[22rem]"
+                className="h-11 w-full cursor-pointer truncate rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm text-slate-700 outline-none transition focus:border-[#C9A96E]/70 focus:bg-white focus:ring-4 focus:ring-[#C9A96E]/15 sm:w-auto sm:max-w-[22rem]"
               >
                 <option value="">Tous les types</option>
                 {types.map((type) => (
@@ -454,7 +454,7 @@ export default function DevisList() {
                     <li
                       key={devis.id}
                       onClick={() => navigate(`/admin/devis/${devis.id}`)}
-                      className="cursor-pointer rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/[0.03] transition-colors hover:border-[#3644D9]/30"
+                      className="cursor-pointer rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/[0.03] transition-colors hover:border-[#C9A96E]/50"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs font-semibold text-slate-800">
@@ -574,7 +574,7 @@ export default function DevisList() {
                                 onClick={() => handleDownload(devis)}
                               >
                                 {downloadingId === devis.id ? (
-                                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                                 ) : (
                                   <Icon d={ICONS.download} />
                                 )}
